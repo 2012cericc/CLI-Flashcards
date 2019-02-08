@@ -11,10 +11,10 @@ Question and answers within a card are separated by " ; ".
 - shuffled cards between rounds
 - ability to hide cards if the user already knows it
 - reset hidden status of all cards
+- ability to use multiple flashcard files
+- detect and indicate format errors in flashcard files
 
 ## Features to add
-- detecting formating errors in the flashcard file
-- take in multiple flashcard files
 - undo hide of the previous card if applicable
 - flag cards in text file to never show again
 - print time it took to complete a round
