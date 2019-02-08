@@ -43,31 +43,55 @@ class Flashcard:
         print("%s, %s, %s" % (self.question, self.answer, self.hide))
 
 ################################################################
+#   check txt file for formatting errors
+################################################################
+def check_file(lines, arg):
+    found_error = False
+
+    for i in range(len(lines)):
+        if lines[i].find(" ; ") == -1:
+            print("Error: formatting error in \"%s\" at line %d" % (arg, i+1))
+            found_error = True
+
+    return found_error
+
+################################################################
 #   open txt file and return card objects
 ################################################################
 def open_file(argv):
+    card_objects = [] #list to hold all card objects
+    found_error = False
+
     #incorrect number of arguments
-    if len(argv) != 2:
+    if len(argv) == 1:
         print("Usage: flashcards.py [text file]")
         sys.exit(1)
+
+    #loop to add cards in each argument
+    for i in range(1, len(argv)):
+
+        #flashcards file not found
+        try:
+            fo = open(argv[i], "r")
+        except FileNotFoundError:
+            print("Error: {} not found".format(argv[i]))
+            sys.exit(1)
     
-    #flashcards file not found
-    try:
-        fo = open(argv[1], "r")
-    except FileNotFoundError:
-        print("Error: {} not found".format(argv[1]))
+        #split file into Flashcard objects
+        lines = fo.read().splitlines()
+        fo.close()
+
+        #if error found, do not append cards to list
+        if check_file(lines, argv[i]) or found_error == True:
+            found_error = True
+        else:
+            for line in lines:
+                temp = line.split(" ; ")
+                card_objects.append(Flashcard(temp[0], temp[1]))
+
+    #exit if error found in a flashcards file
+    if found_error == True:
         sys.exit(1)
-    
-    #split file into Flashcard objects
-    lines = fo.read().splitlines()
-    fo.close()
-
-    #list to hold all card objects
-    card_objects = []
-
-    for line in lines:
-        temp = line.split(" ; ")
-        card_objects.append(Flashcard(temp[0], temp[1]))
 
     return card_objects
 
@@ -101,10 +125,10 @@ def print_options():
 #   main
 ################################################################
 if __name__ == '__main__':
-    cards = open_file(sys.argv) #open file and create list of card objects
-
     hidden_cards = 0 #track number of cards hidden
     replay = '' #play again input
+
+    cards = open_file(sys.argv) #open file and create list of card objects
 
     #game loop
     while replay != 'n':
