@@ -1,34 +1,9 @@
 #!/usr/bin/env python3
 
-"""
-Basic flashcards program
-
-Takes a file containing flashcards as an argument
-Format of flashcards file: question ; answer
-    Question and answer separated by " ; "
-    Each card separated by a newline
-
-Features
-    Randomized card order each round
-    Delete card from the list (does not delete from file)
-        prevents card from being shown in next round
-    resetting hidden status of all cards
-
-Potential features to add
-    detect incorrectly formatted flashcard files, print line number
-    Input multiple flashcard files
-    undo previous hide card
-        only applies if previous command was delete
-    create a GUI
-        Tkinker?
-    flag cards in file to never show them again
-        or save non-hidden cards in a new flashcard file
-    print time taken to complete a round
-        based on honesty
-"""
 import sys
 import os
 import random
+import timeit
 
 ################################################################
 #   Flashcard class
@@ -77,12 +52,12 @@ def open_file(argv):
             print("Error: {} not found".format(argv[i]))
             sys.exit(1)
     
-        #split file into Flashcard objects
+        #split each line from file into "lines" list
         lines = fo.read().splitlines()
         fo.close()
 
-        #if error found, do not append cards to list
-        if check_file(lines, argv[i]) or found_error == True:
+        #if error found, do not append cards to card_objects
+        if found_error == True or check_file(lines, argv[i]):
             found_error = True
         else:
             for line in lines:
@@ -111,6 +86,13 @@ def reset_cards(cards):
         card.hide = False
 
 ################################################################
+#   print time taken
+################################################################
+def convert_seconds(seconds):
+    m, s = divmod(seconds, 60)
+    return (m, s)
+
+################################################################
 #   print options
 ################################################################
 def print_options():
@@ -127,40 +109,23 @@ def print_options():
 if __name__ == '__main__':
     hidden_cards = 0 #track number of cards hidden
     replay = '' #play again input
+    prev_time = (0, 0)
 
     cards = open_file(sys.argv) #open file and create list of card objects
 
     #game loop
     while replay != 'n':
-
-        #reset hidden cards?
-        if hidden_cards > 0 and replay == 'y':
-           
-            while True:
-                reset = input("Reset all cards? (y/n): ")
-                if reset == 'n':
-                    #check if all cards are hidden
-                    if hidden_cards == len(cards):
-                        print("All cards have been hidden, reset cards")
-                    else:
-                        break
-                elif reset == 'y':
-                    hidden_cards = 0
-                    reset_cards(cards)
-                    break
-                elif reset == 'q':
-                    print("Exiting flashcard program")
-                    sys.exit()
-                else:
-                    print("Invalid input")
-
-        shuffle_cards(cards)
         os.system("clear") #clear terminal between rounds
+
+        start_time = timeit.default_timer()
+        shuffle_cards(cards)
         print_options()
+        
+        print("Previous time: %02d:%02d" % (prev_time[0], prev_time[1]))
+        print('')
 
         #play through the cards
         for i in range(len(cards)):
-
             if cards[i].hide is False:
                 print("question: %s" % cards[i].question)
 
@@ -171,7 +136,7 @@ if __name__ == '__main__':
                         print("Exiting flashcard program")
                         sys.exit()
                     #next card
-                    elif prompt == 'n':
+                    elif prompt == 'n' or prompt == '':
                         print("answer: %s" % cards[i].answer)
                         break
                     #hide card
@@ -184,17 +149,43 @@ if __name__ == '__main__':
                         print_options()
                     else:
                         print("Invalid input")
-                print('')
+                print('----------------------------------------')
+
+        #print time taken to complete the round
+        time_taken = timeit.default_timer() - start_time
+        converted_time = convert_seconds(time_taken)
+        prev_time = converted_time
+        print("Time taken: %02d:%02d" % (time_taken[0], time_taken[1]))
+        print('')
 
         #replay?
         while True:
             replay = input("Play again? (y/n): ")
             if replay == 'n' or replay == 'q':
-                print("Exiting, all cards completed")
+                print("Exiting, all cards complete")
                 sys.exit()
             elif replay == 'y':
                 break
             else:
                 print("Invalid input")
 
+        #reset hidden cards?
+        if hidden_cards > 0 and replay == 'y':
+            while True:
+                reset = input("Reset all cards? (y/n): ")
+                if reset == 'n':
+                    #check if all cards are hidden
+                    if hidden_cards == len(cards):
+                        print("All cards have been hidden, reset cards")
+                    else:
+                        break
+                elif reset == 'y':
+                    hidden_cards = 0
+                    reset_cards(cards) #unhide all cards
+                    break
+                elif reset == 'q':
+                    print("Exiting flashcard program")
+                    sys.exit()
+                else:
+                    print("Invalid input")
     sys.exit()
