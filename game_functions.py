@@ -43,12 +43,12 @@ def open_file(argv):
             fo.close()
     
         #if error found, do not append cards to card_objects
-        if found_error == True or check_file(lines, argv[i]):
-            found_error = True
-        else:
+        if check_file(lines, argv[i]) == False:
             for line in lines:
                 temp = line.split(" ; ")
                 card_objects.append(Flashcard(temp[0], temp[1]))
+        else:
+            found_error = True
 
     #exit if error found in a flashcards file
     if found_error == True:
