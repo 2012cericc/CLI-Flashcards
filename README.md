@@ -3,9 +3,11 @@
 This is a basic flashcard program that runs in the terminal. 
 
 ## How to use the program
-flashcards.py takes a text file as an argument.
+flashcards.py takes a text file(s) as an argument.
 In the text file, cards are separated by a newline.
 Question and answers within a card are separated by " ; ".
+Cards can be hidden from subequent rounds if the answer is already known.
+A timer is provided to help gamify the learning process.
 
 ## Features
 - shuffled cards between rounds
@@ -16,17 +18,17 @@ Question and answers within a card are separated by " ; ".
 - print fastest time taken to complete a round
 - print time it took to complete the round
 - print previous time to complete a round
+- print number of non hidden cards at start of round
 
 ## Features to add
 - undo hide of the previous card if applicable
 - flag cards in text file to never show again unless desired
-- print number of non hidden cards at start of round
 - GUI version, maybe Tkinker?
 - save non-hidden cards in a new file for later use
+- guard against multiple question/answer separators in a line
 
 ## Improvements to make
 - find a more human readable way to format flashcard text file
-- clean up main
 
 ## General design goals/justifications
 - Create a reasonably robust flashcard program

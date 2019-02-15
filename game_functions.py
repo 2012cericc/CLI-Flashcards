@@ -72,27 +72,18 @@ def reset_cards(cards):
         card.hide = False
 
 ################################################################
+#   print number of cards this round
+################################################################
+def print_num_cards(num_cards, num_hidden):
+    print("Number of cards this round: %d" % (num_cards-num_hidden))
+    print("")
+
+################################################################
 #   convert seconds to (mins, secs) tuple
 ################################################################
 def convert_seconds(seconds):
     m, s = divmod(seconds, 60)
     return (m, s)
-
-################################################################
-#   print time taken
-################################################################
-def print_time_taken(time_taken):
-    converted_time = convert_seconds(time_taken)
-    print("Time taken:    %02d:%02d" % (converted_time[0], converted_time[1]))
-    print("")
-
-################################################################
-#   print prev time
-################################################################
-def print_prev_time(prev_time):
-    if prev_time > 0:
-        converted_time = convert_seconds(prev_time)
-        print("Previous time: %02d:%02d" % (converted_time[0], converted_time[1]))
 
 ################################################################
 #   print best time
@@ -111,6 +102,22 @@ def print_best_time(time_taken, best_time):
     return new_best_time
 
 ################################################################
+#   print prev time
+################################################################
+def print_prev_time(prev_time):
+    if prev_time > 0:
+        converted_time = convert_seconds(prev_time)
+        print("Previous time: %02d:%02d" % (converted_time[0], converted_time[1]))
+
+################################################################
+#   print time taken
+################################################################
+def print_time_taken(time_taken):
+    converted_time = convert_seconds(time_taken)
+    print("Time taken:    %02d:%02d" % (converted_time[0], converted_time[1]))
+    print("")
+
+################################################################
 #   print options
 ################################################################
 def print_options():
@@ -119,12 +126,12 @@ def print_options():
     print(" (n)ext or () - print answer")
     print(" (d)elete - delete card from list")
     print(" (q)uit - quit the game")
-    print('')
+    print("")
 
 ################################################################
 #   play through cards
 ################################################################
-def play_cards(cards, hidden_cards):
+def play_cards(cards, num_hidden):
     for i in range(len(cards)):
         if cards[i].hide is False:
             print("question: %s" % cards[i].question)
@@ -142,7 +149,7 @@ def play_cards(cards, hidden_cards):
                 #hide card
                 elif prompt == 'd':
                     cards[i].hide = True
-                    hidden_cards += 1
+                    num_hidden += 1
                     break
                 #print valid commands
                 elif prompt == 'h':
@@ -151,7 +158,7 @@ def play_cards(cards, hidden_cards):
                     print("Invalid input")
             print('----------------------------------------')
     print("")
-    return hidden_cards
+    return num_hidden
 
 ################################################################
 #   ask to replay game
@@ -170,13 +177,13 @@ def prompt_replay():
 ################################################################
 #   ask to reset hidden cards
 ################################################################
-def prompt_reset(hidden_cards, num_cards):
-    if hidden_cards > 0:
+def prompt_reset(num_hidden, num_cards):
+    if num_hidden > 0:
         while True:
             reset = input("Reset cards? (y/n): ")
             if reset == 'n':
                 #check if all cards are hidden
-                if hidden_cards == num_cards:
+                if num_hidden == num_cards:
                     print("All cards have been hidden, reset required")
                 else:
                     return False

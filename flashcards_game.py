@@ -9,7 +9,7 @@ import game_functions as gf
 #   main
 ################################################################
 if __name__ == '__main__':
-    hidden_cards = 0 #track number of cards hidden
+    num_hidden = 0 #track number of cards hidden
     prev_time = 0.0
     best_time = 0.0
 
@@ -24,7 +24,9 @@ if __name__ == '__main__':
         gf.shuffle_cards(cards)
         gf.print_options()
 
-        hidden_cards = gf.play_cards(cards, hidden_cards)
+        gf.print_num_cards(len(cards), num_hidden)
+
+        num_hidden = gf.play_cards(cards, num_hidden)
 
         time_taken = timeit.default_timer() - start_time
         best_time = gf.print_best_time(time_taken, best_time)
@@ -34,8 +36,8 @@ if __name__ == '__main__':
 
         gf.prompt_replay()
 
-        if gf.prompt_reset(hidden_cards, len(cards)):
-            hidden_cards = 0
+        if gf.prompt_reset(num_hidden, len(cards)):
+            num_hidden = 0
             gf.reset_cards(cards)
   
     sys.exit()
