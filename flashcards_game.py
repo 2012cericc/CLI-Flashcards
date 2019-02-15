@@ -10,7 +10,6 @@ import game_functions as gf
 ################################################################
 if __name__ == '__main__':
     hidden_cards = 0 #track number of cards hidden
-    replay = '' #play again input
     prev_time = 0.0
     best_time = 0.0
 
@@ -25,7 +24,7 @@ if __name__ == '__main__':
         gf.shuffle_cards(cards)
         gf.print_options()
 
-        hidden_cards += gf.play_cards(cards, hidden_cards)
+        hidden_cards = gf.play_cards(cards, hidden_cards)
 
         time_taken = timeit.default_timer() - start_time
         best_time = gf.print_best_time(time_taken, best_time)
