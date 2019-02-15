@@ -6,7 +6,7 @@ This is a basic flashcard program that runs in the terminal.
 flashcards.py takes a text file(s) as an argument.
 In the text file, cards are separated by a newline.
 Question and answers within a card are separated by " ; ".
-Cards can be hidden from subequent rounds if the answer is already known.
+Cards can be hidden from subsequent rounds if the answer is already known.
 A timer is provided to help gamify the learning process.
 
 ## Features
