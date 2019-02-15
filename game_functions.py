@@ -42,7 +42,7 @@ def open_file(argv):
         else:
             fo.close()
     
-        #if error found, do not append cards to card_objects
+        #check file for errors
         if check_file(lines, argv[i]) == False:
             for line in lines:
                 temp = line.split(" ; ")
