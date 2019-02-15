@@ -13,13 +13,13 @@ Question and answers within a card are separated by " ; ".
 - reset hidden status of all cards
 - ability to use multiple flashcard files
 - detect and indicate formatting errors in flashcard files
+- print fastest time taken to complete a round
 - print time it took to complete the round
-- print previous time at start of round
+- print previous time to complete a round
 
 ## Features to add
 - undo hide of the previous card if applicable
 - flag cards in text file to never show again unless desired
-- print fastested time taken to complete a round at start
 - print number of non hidden cards at start of round
 - GUI version, maybe Tkinker?
 - save non-hidden cards in a new file for later use
