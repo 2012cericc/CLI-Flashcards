@@ -25,7 +25,7 @@ A timer is provided to help gamify the learning process.
 - flag cards in text file to never show again unless desired
 - GUI version, maybe Tkinker?
 - save non-hidden cards in a new file for later use
-- guard against multiple question/answer separators in a line
+- guard against multiple question/answer separators in a text file line
 
 ## Improvements to make
 - find a more human readable way to format flashcard text file

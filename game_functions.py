@@ -50,7 +50,7 @@ def open_file(argv):
         else:
             found_error = True
 
-    #exit if error found in a flashcards file
+    #exit if any error found in a flashcards file
     if found_error == True:
         sys.exit(1)
 
@@ -134,7 +134,8 @@ def print_options():
 def play_cards(cards, num_hidden):
     for i in range(len(cards)):
         if cards[i].hide is False:
-            print("question: %s" % cards[i].question)
+            print("question:")
+            cards[i].print_question()
 
             while True:
                 prompt = input("> ")
@@ -144,7 +145,8 @@ def play_cards(cards, num_hidden):
                     sys.exit()
                 #next card
                 elif prompt == 'n' or prompt == '':
-                    print("answer: %s" % cards[i].answer)
+                    print("answer:")
+                    cards[i].print_answer()
                     break
                 #hide card
                 elif prompt == 'd':
