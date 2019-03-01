@@ -24,14 +24,16 @@ A timer is provided to help gamify the learning process.
 - undo hide of the previous card if applicable
 - flag cards in text file to never show again unless desired
 - GUI version, maybe Tkinker?
-- save non-hidden cards in a new file for later use
 - guard against multiple question/answer separators in a text file line
+- change reset/replay prompts to be a menu so that there is only 1 prompt
+  - save non-hidden cards in a new file for later use
+  - ability to add another flashcard file while playing (enable tab completion)
 
 ## Improvements to make
 - find a more human readable way to format flashcard text file
 
 ## General design goals/justifications
-- Create a reasonably robust flashcard program
+- Create a simple and reasonably robust flashcard program
 - Leave card creation to a text editor, no need to reinvent the wheel
   - Its simpler to type/edit cards in a text editor
   - Text editors all have a search function, easy to find/edit cards
@@ -41,4 +43,4 @@ I had a neuromechanics class in school taught by a graduate student. Although th
 
 Constantly being quizzed really helped in quickly remembering terminology and concepts as opposed to just staring at notes. I find it a way for me to be able to steamroll through material and still retain it.
 
-This is a much improved version of that original program. This is also for me to practice programming and get used to using Github.
+This is a much improved version of that original program. This is also for me to practice programming, get used to using Github, and of course for my own personal use.
