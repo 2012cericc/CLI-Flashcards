@@ -118,6 +118,16 @@ def print_time_taken(time_taken):
     print("")
 
 ################################################################
+#   print all time stats
+################################################################
+def print_time_stats(stats):
+    stats.time_taken = timeit.default_timer() - stats.start_time
+    stats.best_time = print_best_time(stats.time_taken, stats.best_time)
+    print_prev_time(stats.prev_time)
+    print_time_taken(stats.time_taken)
+    stats.prev_time = stats.time_taken
+
+################################################################
 #   print options
 ################################################################
 def print_options():
@@ -158,7 +168,7 @@ def play_cards(cards, num_hidden):
                     print_options()
                 else:
                     print("Invalid input")
-            print('----------------------------------------')
+            print('-' * 70)
     print("")
     return num_hidden
 
