@@ -26,7 +26,7 @@ A timer is provided to help gamify the learning process.
 ## Features to add
 - undo hide of the previous card if applicable
 - flag cards in text file to never show again unless desired
-- GUI version, maybe Tkinker?
+- GUI version, maybe Tkinter?
 - guard against multiple question/answer separators in a text file line
 - ability to add another flashcard file after a round (enable tab completion)
 
