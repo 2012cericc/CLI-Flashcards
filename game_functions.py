@@ -1,6 +1,7 @@
 import sys
 import random
 import timeit
+import re
 from flashcard import Flashcard
 
 ################################################################
@@ -13,7 +14,6 @@ def check_file(lines, arg):
         if lines[i].find(" ; ") == -1:
             print("Error: formatting error in \"%s\" at line %d" % (arg, i+1))
             found_error = True
-
     return found_error
 
 ################################################################
@@ -30,14 +30,13 @@ def open_file(argv):
 
     #loop to add cards in each argument
     for i in range(1, len(argv)):
-
         #flashcards file not found
         try:
             fo = open(argv[i], "r")
             #split each line from file into "lines" list
             lines = fo.read().splitlines()
         except FileNotFoundError:
-            print("Error: {} not found".format(argv[i]))
+            print("Error: %s not found" % argv[i])
             sys.exit(1)
         else:
             fo.close()
@@ -55,6 +54,38 @@ def open_file(argv):
         sys.exit(1)
 
     return card_objects
+
+################################################################
+#   save current set of flashcards
+################################################################
+def save_file(cards):
+    new_filename = ''
+
+    print("Enter name of file to be created:")
+    print(" leave input blank to not create a new file")
+
+    while True:
+        new_filename = input("> ").rstrip()
+        if new_filename == '':
+            print()
+            break
+        #only allow certain characters in filename
+        elif re.match("^[A-Za-z0-9-_.() ]*$", new_filename):
+            try:
+                fs = open(new_filename, "x")
+            except FileExistsError:
+                print("Error: filename %s already exists" % new_filename)
+                print()
+            else:
+                for card in cards:
+                    if card.hide == False:
+                        print(card.question + " ; " + card.answer, file=fs)
+                fs.close()
+                print()
+            break
+        else:
+            print("Invalid input")
+            print(" only letters, numbers, and -_.() allowed")
 
 ################################################################
 #   shuffle flashcards
@@ -76,7 +107,7 @@ def reset_cards(cards):
 ################################################################
 def print_num_cards(num_cards, num_hidden):
     print("Number of cards this round: %d" % (num_cards-num_hidden))
-    print("")
+    print()
 
 ################################################################
 #   convert seconds to (mins, secs) tuple
@@ -115,7 +146,7 @@ def print_prev_time(prev_time):
 def print_time_taken(time_taken):
     converted_time = convert_seconds(time_taken)
     print("Time taken:    %02d:%02d" % (converted_time[0], converted_time[1]))
-    print("")
+    print()
 
 ################################################################
 #   print all time stats
@@ -136,30 +167,35 @@ def print_options():
     print(" (n)ext or () - print answer")
     print(" (d)elete - delete card from list")
     print(" (q)uit - quit the game")
-    print("")
+    print()
 
 ################################################################
 #   play through cards
 ################################################################
 def play_cards(cards, stats):
+    stats.curr_card_num = 1
+    cards_in_round = stats.num_cards-stats.num_hidden
+
     for i in range(len(cards)):
         if cards[i].hide is False:
-            print("question:")
+            print("question %d/%d:" % (stats.curr_card_num, cards_in_round))
             cards[i].print_question()
 
             while True:
-                prompt = input("> ")
+                prompt = input("> ").rstrip()
                 #quit
                 if prompt == 'q':
                     print("Exiting flashcard program")
                     sys.exit()
                 #next card
                 elif prompt == 'n' or prompt == '':
+                    stats.curr_card_num += 1
                     print("answer:")
                     cards[i].print_answer()
                     break
                 #hide card
                 elif prompt == 'd':
+                    stats.curr_card_num += 1
                     cards[i].hide = True
                     stats.num_hidden += 1
                     break
@@ -169,14 +205,12 @@ def play_cards(cards, stats):
                 else:
                     print("Invalid input")
             print('-' * 70)
-    print("")
+    print()
 
 ################################################################
 #   display correct end round menu
 ################################################################
 def end_round_prompt(stats, cards):
-    print("End of round options:")
-
     #show all cards hidden menu
     if stats.num_hidden == stats.num_cards:
         all_hidden_menu(stats, cards)
@@ -191,63 +225,69 @@ def end_round_prompt(stats, cards):
 #   all cards hidden menu
 ################################################################
 def all_hidden_menu(stats, cards):
+    print("End of round options:")
     print(" all cards are hidden, reset to play again")
     print(" (1) - reset cards and replay")
     #print(" (2) - add file")
-    #print(" (3) - save file")
-    print(" (4) - quit")
+    print(" (3) - quit")
 
     while True:
-        option = input("> ")
+        option = input("> ").rstrip()
         if option == '1':
             reset_cards(cards)
             stats.num_hidden = 0
             break
-        elif option == '4' or option == 'q':
+        elif option == '3' or option == 'q':
             print("Exiting flashcard program")
             sys.exit()
         else:
             print("Invalid input")
+            print()
 
 ################################################################
 #   no cards hidden menu
 ################################################################
 def none_hidden_menu(stats, cards):
+    print("End of round options:")
     print(" (1) - replay")
     #print(" (2) - add file")
-    #print(" (3) - save file")
-    print(" (4) - quit")
+    print(" (3) - quit")
 
     while True:
-        option = input("> ")
+        option = input("> ").rstrip()
         if option == '1':
             break
-        elif option == '4' or option == 'q':
+        elif option == '3' or option == 'q':
             print("Exiting flashcard program")
             sys.exit()
         else:
             print("Invalid input")
+            print()
 
 ################################################################
 #   some cards hidden menu
 ################################################################
 def some_hidden_menu(stats, cards):
-    print(" (1) - replay")
-    print(" (2) - reset cards and replay")
-    #print(" (3) - add file")
-    #print(" (4) - save file")
-    print(" (5) - quit")
-
     while True:
-        option = input("> ")
+        print("End of round options:")
+        print(" (1) - replay")
+        print(" (2) - reset cards and replay")
+        #print(" (3) - add file")
+        print(" (4) - save file")
+        print(" (5) - quit")
+
+        option = input("> ").rstrip()
         if option == '1':
             break
         elif option == '2':
             reset_cards(cards)
             stats.num_hidden = 0
             break
-        elif option == '4' or option == 'q':
+        elif option == '4':
+            save_file(cards)
+        elif option == '5' or option == 'q':
             print("Exiting flashcard program")
             sys.exit()
         else:
             print("Invalid input")
+            print()

@@ -19,15 +19,16 @@ A timer is provided to help gamify the learning process.
 - print time it took to complete the round
 - print previous time to complete a round
 - print number of non hidden cards at start of round
+ - print current card number for each card
+- change reset/replay prompts to be a menu so that there is only 1 prompt
+  - save non-hidden cards in a new file for later use
 
 ## Features to add
 - undo hide of the previous card if applicable
 - flag cards in text file to never show again unless desired
 - GUI version, maybe Tkinker?
 - guard against multiple question/answer separators in a text file line
-- change reset/replay prompts to be a menu so that there is only 1 prompt
-  - save non-hidden cards in a new file for later use
-  - ability to add another flashcard file while playing (enable tab completion)
+- ability to add another flashcard file after a round (enable tab completion)
 
 ## Improvements to make
 - find a more human readable way to format flashcard text file

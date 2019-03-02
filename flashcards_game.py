@@ -10,7 +10,6 @@ from statistics import Statistics
 #   main
 ################################################################
 if __name__ == '__main__':
-
     cards = gf.open_file(sys.argv) #open file and create list of card objects
     stats = Statistics(len(cards))
 
@@ -27,5 +26,4 @@ if __name__ == '__main__':
         gf.print_time_stats(stats)
 
         gf.end_round_prompt(stats, cards)
-  
     sys.exit()
