@@ -42,7 +42,7 @@ def open_file(argv):
         else:
             fo.close()
     
-        #check file for errors
+        #check file for formatting errors
         if check_file(lines, argv[i]) == False:
             for line in lines:
                 temp = line.split(" ; ")
@@ -141,7 +141,7 @@ def print_options():
 ################################################################
 #   play through cards
 ################################################################
-def play_cards(cards, num_hidden):
+def play_cards(cards, stats):
     for i in range(len(cards)):
         if cards[i].hide is False:
             print("question:")
@@ -161,7 +161,7 @@ def play_cards(cards, num_hidden):
                 #hide card
                 elif prompt == 'd':
                     cards[i].hide = True
-                    num_hidden += 1
+                    stats.num_hidden += 1
                     break
                 #print valid commands
                 elif prompt == 'h':
@@ -170,41 +170,84 @@ def play_cards(cards, num_hidden):
                     print("Invalid input")
             print('-' * 70)
     print("")
-    return num_hidden
 
 ################################################################
-#   ask to replay game
+#   display correct end round menu
 ################################################################
-def prompt_replay():
+def end_round_prompt(stats, cards):
+    print("End of round options:")
+
+    #show all cards hidden menu
+    if stats.num_hidden == stats.num_cards:
+        all_hidden_menu(stats, cards)
+    #show no cards hidden menu
+    elif stats.num_hidden == 0:
+        none_hidden_menu(stats, cards)
+    #show some cards hidden menu
+    else:
+        some_hidden_menu(stats, cards)
+
+################################################################
+#   all cards hidden menu
+################################################################
+def all_hidden_menu(stats, cards):
+    print(" all cards are hidden, reset to play again")
+    print(" (1) - reset cards and replay")
+    #print(" (2) - add file")
+    #print(" (3) - save file")
+    print(" (4) - quit")
+
     while True:
-        replay = input("Play again? (y/n):  ")
-        if replay == 'n' or replay == 'q':
-            print("Exiting, all cards complete")
-            sys.exit()
-        elif replay == 'y':
+        option = input("> ")
+        if option == '1':
+            reset_cards(cards)
+            stats.num_hidden = 0
             break
+        elif option == '4' or option == 'q':
+            print("Exiting flashcard program")
+            sys.exit()
         else:
             print("Invalid input")
 
 ################################################################
-#   ask to reset hidden cards
+#   no cards hidden menu
 ################################################################
-def prompt_reset(num_hidden, num_cards):
-    if num_hidden > 0:
-        while True:
-            reset = input("Reset cards? (y/n): ")
-            if reset == 'n':
-                #check if all cards are hidden
-                if num_hidden == num_cards:
-                    print("All cards have been hidden, reset required")
-                else:
-                    return False
-                    break
-            elif reset == 'y':
-                return True
-                break
-            elif reset == 'q':
-                print("Exiting flashcard program")
-                sys.exit()
-            else:
-                print("Invalid input")
+def none_hidden_menu(stats, cards):
+    print(" (1) - replay")
+    #print(" (2) - add file")
+    #print(" (3) - save file")
+    print(" (4) - quit")
+
+    while True:
+        option = input("> ")
+        if option == '1':
+            break
+        elif option == '4' or option == 'q':
+            print("Exiting flashcard program")
+            sys.exit()
+        else:
+            print("Invalid input")
+
+################################################################
+#   some cards hidden menu
+################################################################
+def some_hidden_menu(stats, cards):
+    print(" (1) - replay")
+    print(" (2) - reset cards and replay")
+    #print(" (3) - add file")
+    #print(" (4) - save file")
+    print(" (5) - quit")
+
+    while True:
+        option = input("> ")
+        if option == '1':
+            break
+        elif option == '2':
+            reset_cards(cards)
+            stats.num_hidden = 0
+            break
+        elif option == '4' or option == 'q':
+            print("Exiting flashcard program")
+            sys.exit()
+        else:
+            print("Invalid input")

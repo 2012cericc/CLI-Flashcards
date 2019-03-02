@@ -23,15 +23,9 @@ if __name__ == '__main__':
         gf.print_num_cards(stats.num_cards, stats.num_hidden)
 
         stats.start_time = timeit.default_timer()
-
-        stats.num_hidden = gf.play_cards(cards, stats.num_hidden)
-
+        gf.play_cards(cards, stats)
         gf.print_time_stats(stats)
 
-        gf.prompt_replay()
-
-        if gf.prompt_reset(stats.num_hidden, len(cards)):
-            num_hidden = 0
-            gf.reset_cards(cards)
+        gf.end_round_prompt(stats, cards)
   
     sys.exit()
