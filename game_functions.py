@@ -5,6 +5,15 @@ import re
 from flashcard import Flashcard
 
 ################################################################
+#   check number of arguments
+################################################################
+def check_arguments(argv):
+    #incorrect number of arguments
+    if len(argv) == 1:
+        print("Usage: flashcards.py [text file]")
+        sys.exit(1)
+
+################################################################
 #   check txt file for formatting errors
 ################################################################
 def check_file(lines, arg):
@@ -17,43 +26,60 @@ def check_file(lines, arg):
     return found_error
 
 ################################################################
-#   open txt file and return card objects
+#   open txt file add them to cards list
 ################################################################
-def open_file(argv):
-    card_objects = [] #list to hold all card objects
+def open_file(arg, card_objects, stats):
     found_error = False
-
-    #incorrect number of arguments
-    if len(argv) == 1:
-        print("Usage: flashcards.py [text file]")
-        sys.exit(1)
-
-    #loop to add cards in each argument
-    for i in range(1, len(argv)):
-        #flashcards file not found
-        try:
-            fo = open(argv[i], "r")
-            #split each line from file into "lines" list
-            lines = fo.read().splitlines()
-        except FileNotFoundError:
-            print("Error: %s not found" % argv[i])
-            sys.exit(1)
-        else:
-            fo.close()
-    
+    #flashcards file not found
+    try:
+        fo = open(arg, "r")
+        #split each line from file into "lines" list
+        lines = fo.read().splitlines()
+    except FileNotFoundError:
+        print("Error: \"%s\" not found" % arg)
+        found_error = True
+    else:
+        fo.close()
         #check file for formatting errors
-        if check_file(lines, argv[i]) == False:
+        if check_file(lines, arg) == False:
             for line in lines:
                 temp = line.split(" ; ")
                 card_objects.append(Flashcard(temp[0], temp[1]))
+                stats.num_cards += 1
         else:
             found_error = True
 
-    #exit if any error found in a flashcards file
-    if found_error == True:
-        sys.exit(1)
+    return found_error
 
-    return card_objects
+################################################################
+#   open cards from args
+################################################################
+def open_args(argv, card_objects, stats):
+    found_error = False
+
+    #loop to add cards in each argument
+    for i in range(1, len(argv)):
+        if open_file(argv[i], card_objects, stats):
+            found_error = True
+
+    return found_error
+
+################################################################
+#   add another flashcard file
+################################################################
+def add_file(cards, stats):
+    while True:
+        print("Enter name of file to add:")
+        print(" leave input blank to not add a file")
+        filename = input("> ")
+        print()
+
+        if filename == '':
+            break
+        elif not open_file(filename, cards, stats):
+            print("added: \"%s\" to the next round" % filename)
+            print()
+            break
 
 ################################################################
 #   save current set of flashcards
@@ -74,7 +100,7 @@ def save_file(cards):
             try:
                 fs = open(new_filename, "x")
             except FileExistsError:
-                print("Error: filename %s already exists" % new_filename)
+                print("Error: filename \"%s\" already exists" % new_filename)
                 print()
             else:
                 for card in cards:
@@ -228,21 +254,24 @@ def all_hidden_menu(stats, cards):
     print("End of round options:")
     print(" all cards are hidden, reset to play again")
     print(" (1) - reset cards and replay")
-    #print(" (2) - add file")
+    print(" (2) - add file")
     print(" (3) - quit")
 
-    while True:
-        option = input("> ").rstrip()
-        if option == '1':
-            reset_cards(cards)
-            stats.num_hidden = 0
-            break
-        elif option == '3' or option == 'q':
-            print("Exiting flashcard program")
-            sys.exit()
-        else:
-            print("Invalid input")
-            print()
+    option = input("> ").rstrip()
+    if option == '1':
+        reset_cards(cards)
+        stats.num_hidden = 0
+        return
+    elif option == '2':
+        add_file(cards, stats)
+    elif option == '3' or option == 'q':
+        print("Exiting flashcard program")
+        sys.exit()
+    else:
+        print("Invalid input")
+        print()
+
+    end_round_prompt(stats, cards)
 
 ################################################################
 #   no cards hidden menu
@@ -250,44 +279,50 @@ def all_hidden_menu(stats, cards):
 def none_hidden_menu(stats, cards):
     print("End of round options:")
     print(" (1) - replay")
-    #print(" (2) - add file")
+    print(" (2) - add file")
     print(" (3) - quit")
 
-    while True:
-        option = input("> ").rstrip()
-        if option == '1':
-            break
-        elif option == '3' or option == 'q':
-            print("Exiting flashcard program")
-            sys.exit()
-        else:
-            print("Invalid input")
-            print()
+    option = input("> ").rstrip()
+    if option == '1':
+        return
+    elif option == '2':
+        add_file(cards, stats)
+    elif option == '3' or option == 'q':
+        print("Exiting flashcard program")
+        sys.exit()
+    else:
+        print("Invalid input")
+        print()
+
+    end_round_prompt(stats, cards)
 
 ################################################################
 #   some cards hidden menu
 ################################################################
 def some_hidden_menu(stats, cards):
-    while True:
-        print("End of round options:")
-        print(" (1) - replay")
-        print(" (2) - reset cards and replay")
-        #print(" (3) - add file")
-        print(" (4) - save file")
-        print(" (5) - quit")
+    print("End of round options:")
+    print(" (1) - replay")
+    print(" (2) - reset cards and replay")
+    print(" (3) - add file")
+    print(" (4) - save file")
+    print(" (5) - quit")
 
-        option = input("> ").rstrip()
-        if option == '1':
-            break
-        elif option == '2':
-            reset_cards(cards)
-            stats.num_hidden = 0
-            break
-        elif option == '4':
-            save_file(cards)
-        elif option == '5' or option == 'q':
-            print("Exiting flashcard program")
-            sys.exit()
-        else:
-            print("Invalid input")
-            print()
+    option = input("> ").rstrip()
+    if option == '1':
+        return
+    elif option == '2':
+        reset_cards(cards)
+        stats.num_hidden = 0
+        return
+    elif option == '3':
+        add_file(cards, stats)
+    elif option == '4':
+        save_file(cards)
+    elif option == '5' or option == 'q':
+        print("Exiting flashcard program")
+        sys.exit()
+    else:
+        print("Invalid input")
+        print()
+
+    end_round_prompt(stats, cards)

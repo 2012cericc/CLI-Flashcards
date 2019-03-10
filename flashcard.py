@@ -14,11 +14,11 @@ class Flashcard:
         print("%s, %s, %s" % (self.question, self.answer, self.hide))
 
     def print_question(self):
-        question_lines = textwrap.wrap(self.question, width=70)
+        question_lines = textwrap.wrap(self.question, width=68)
         for line in question_lines:
             print("  " + line)
 
     def print_answer(self):
-        answer_lines = textwrap.wrap(self.answer, width=70)
+        answer_lines = textwrap.wrap(self.answer, width=68)
         for line in answer_lines:
             print("  " + line)

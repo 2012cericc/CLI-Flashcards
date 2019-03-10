@@ -11,24 +11,27 @@ A timer is provided to help gamify the learning process.
 
 ## Features
 - shuffled cards between rounds
-- ability to hide cards if the user already knows it
+- hide cards if the user already knows it
 - reset hidden status of all cards
 - ability to use multiple flashcard files
 - detect and indicate formatting errors in flashcard files
-- print fastest time taken to complete a round
-- print time it took to complete the round
-- print previous time to complete a round
+- time each round
+  - print fastest time taken to complete a round
+  - print time it took to complete the round
+  - print previous time to complete a round
 - print number of non hidden cards at start of round
  - print current card number for each card
 - change reset/replay prompts to be a menu so that there is only 1 prompt
   - save non-hidden cards in a new file for later use
+  - ability to add another flashcard file after a round
 
 ## Features to add
 - undo hide of the previous card if applicable
 - flag cards in text file to never show again unless desired
 - GUI version, maybe Tkinter?
 - guard against multiple question/answer separators in a text file line
-- ability to add another flashcard file after a round (enable tab completion)
+- guard against blank flashcard files
+- make adding another flashcard file easier with some sort of tab completion
 
 ## Improvements to make
 - find a more human readable way to format flashcard text file
