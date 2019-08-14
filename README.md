@@ -31,6 +31,8 @@ A timer is provided to help gamify the learning process.
 - GUI version, maybe Tkinter?
 - guard against multiple question/answer separators in a text file line
 - guard against blank flashcard files
+- guard against adding flashcard file already in the game
+  - print what files are currently in the game before user inputs filename to add
 - make adding another flashcard file easier with some sort of tab completion
 
 ## Improvements to make

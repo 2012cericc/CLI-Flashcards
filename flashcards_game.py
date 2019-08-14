@@ -25,7 +25,7 @@ if __name__ == '__main__':
         gf.print_options()
         gf.print_num_cards(stats.num_cards, stats.num_hidden)
         stats.start_time = timeit.default_timer()
-        
+
         gf.play_cards(cards, stats)
         gf.print_time_stats(stats)
         gf.end_round_prompt(stats, cards)
