@@ -1,4 +1,6 @@
+import os
 import sys
+import glob
 import random
 import timeit
 import re
@@ -18,6 +20,9 @@ def check_arguments(argv):
 ################################################################
 def check_file(lines, arg):
     found_error = False
+    if not lines:
+        print("Error: \"%s\" is empty" % arg)
+        found_error = True
 
     for i in range(len(lines)):
         if lines[i].find(" ; ") == -1:
@@ -26,7 +31,7 @@ def check_file(lines, arg):
     return found_error
 
 ################################################################
-#   open txt file add them to cards list
+#   open arg cards file add cards to cards list
 ################################################################
 def open_file(arg, card_objects, stats):
     found_error = False
@@ -52,6 +57,79 @@ def open_file(arg, card_objects, stats):
     return found_error
 
 ################################################################
+#   given a directory, return usable .card files
+################################################################
+def find_files(dir, stats):
+    choices = []
+    card_files = glob.glob(dir + '/*.cards')
+
+    for file_path in card_files:
+        filename = os.path.split(file_path)[1]
+        #do not allow previously imported files
+        if filename not in stats.imported_files:
+            choices.append(file_path)
+    return choices
+
+################################################################
+#   print and let user select which .cards files to import
+################################################################
+def input_choices(files):
+    unique_choices = []
+
+    #print out potential files to add
+    print("Enter indexes of files to import separated by spaces")
+    for index in range(0, len(files)):
+        filename = os.path.split(files[index])[1]
+        print("  (%d) %s" % (index+1, filename))
+
+    choices_input = input("> ")
+
+    #blank input
+    if choices_input == '':
+        return unique_choices
+
+    #guard invalid choices and repeat choices
+    for choice in choices_input.split():
+        if choice.isdigit() == False or int(choice)<=0 or int(choice)>len(files):
+            print("Error: %s is not a valid choice" % choice)
+        elif choice in unique_choices:
+            print("Error: %s already imported" % files[int(choice)-1])
+        else:
+            unique_choices.append(choice)
+
+    return unique_choices
+
+################################################################
+#   find all .cards files, let user choose which to import
+################################################################
+def choose_files(card_objects, stats, dir='.'):
+    #check if given dir is a directory
+    if not os.path.isdir(dir):
+        print("Error: %s is not a directory" % dir)
+        return False
+
+    #find all .cards files in dir that have not been imported
+    files = find_files(dir, stats)
+    if not files:
+        print("Error: no files to import from %s" % dir)
+        return False
+
+    choices = input_choices(files)
+    if not choices:
+        print("no files were imported")
+        return False
+
+    for choice in choices:
+        filepath = files[int(choice)-1]
+        if not open_file(filepath, card_objects, stats):
+            filename = os.path.split(filepath)[1]
+            stats.imported_files.append(filename)
+            print("  added cards from %s" % filename)
+
+    return True
+
+
+################################################################
 #   open cards from args
 ################################################################
 def open_args(argv, card_objects, stats):
@@ -68,6 +146,7 @@ def open_args(argv, card_objects, stats):
 #   add another flashcard file
 ################################################################
 def add_file(cards, stats):
+    """
     while True:
         print("Enter name of file to add:")
         print(" leave input blank to not add a file")
@@ -80,6 +159,20 @@ def add_file(cards, stats):
             print("added: \"%s\" to the next round" % filename)
             print()
             break
+    """
+    while True:
+        print("Enter directory path to look for card files")
+        print(" leave input blank to use \"%s\"" % stats.original_directory)
+        dir = input("> ")
+        print()
+
+        if dir == '':
+            dir = stats.original_directory
+
+        if not choose_files(cards, stats, dir):
+            print()
+            break
+
 
 ################################################################
 #   save current set of flashcards

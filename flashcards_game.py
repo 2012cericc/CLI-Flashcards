@@ -15,12 +15,17 @@ if __name__ == '__main__':
     stats = Statistics()
     cards = []
 
+    if not gf.choose_files(cards, stats, sys.argv[1]):
+        sys.exit()
+    else:
+        stats.original_directory = sys.argv[1]
+    """
     if gf.open_args(sys.argv, cards, stats):
         sys.exit()
-
+    """
     #game loop
     while True:
-        os.system("clear")  #clear terminal between rounds
+        
         gf.shuffle_cards(cards)
         gf.print_options()
         gf.print_num_cards(stats.num_cards, stats.num_hidden)
@@ -29,4 +34,7 @@ if __name__ == '__main__':
         gf.play_cards(cards, stats)
         gf.print_time_stats(stats)
         gf.end_round_prompt(stats, cards)
+
+        os.system("clear")  #clear terminal between rounds
     sys.exit()
+    
