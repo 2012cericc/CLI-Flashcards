@@ -14,6 +14,8 @@ class Flashcard:
         print("%s, %s, %s" % (self.question, self.answer, self.hide))
 
     def print_question(self):
+        if self.hide:
+            print("This card is hidden")
         question_lines = textwrap.wrap(self.question, width=68)
         for line in question_lines:
             print("  " + line)

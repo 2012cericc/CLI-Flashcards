@@ -5,14 +5,15 @@ import random
 import timeit
 import re
 from flashcard import Flashcard
+from statistics import Statistics
 
 ################################################################
 #   check number of arguments
 ################################################################
 def check_arguments(argv):
     #incorrect number of arguments
-    if len(argv) == 1:
-        print("Usage: flashcards.py [text file]")
+    if len(argv) != 2:
+        print("Usage: flashcards.py [.cards]")
         sys.exit(1)
 
 ################################################################
@@ -83,9 +84,11 @@ def input_choices(files):
         print("  (%d) %s" % (index+1, filename))
 
     choices_input = input("> ")
-
-    #blank input
-    if choices_input == '':
+    
+    if choices_input == 'q':
+        print("Exiting flashcard program")
+        sys.exit()
+    elif choices_input == '': #blank input
         return unique_choices
 
     #guard invalid choices and repeat choices
@@ -128,38 +131,10 @@ def choose_files(card_objects, stats, dir='.'):
 
     return True
 
-
-################################################################
-#   open cards from args
-################################################################
-def open_args(argv, card_objects, stats):
-    found_error = False
-
-    #loop to add cards in each argument
-    for i in range(1, len(argv)):
-        if open_file(argv[i], card_objects, stats):
-            found_error = True
-
-    return found_error
-
 ################################################################
 #   add another flashcard file
 ################################################################
 def add_file(cards, stats):
-    """
-    while True:
-        print("Enter name of file to add:")
-        print(" leave input blank to not add a file")
-        filename = input("> ")
-        print()
-
-        if filename == '':
-            break
-        elif not open_file(filename, cards, stats):
-            print("added: \"%s\" to the next round" % filename)
-            print()
-            break
-    """
     while True:
         print("Enter directory path to look for card files")
         print(" leave input blank to use \"%s\"" % stats.original_directory)
@@ -169,7 +144,10 @@ def add_file(cards, stats):
         if dir == '':
             dir = stats.original_directory
 
-        if not choose_files(cards, stats, dir):
+        if choose_files(cards, stats, dir):
+            print()
+            break
+        else:
             print()
             break
 
