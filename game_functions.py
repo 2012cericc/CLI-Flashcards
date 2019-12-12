@@ -2,7 +2,6 @@ import os
 import sys
 import glob
 import random
-import timeit
 import re
 from flashcard import Flashcard
 from statistics import Statistics
