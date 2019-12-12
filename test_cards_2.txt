@@ -1,6 +1,0 @@
-Question2.1 ; Answer2.1
-Question2.2 ; Answer2.2
-Question2.3 ; Answer2.3
-Question2.4 ; Answer2.4
-Question2.5 ; Answer2.5
-Question2.6 ; Answer2.6
